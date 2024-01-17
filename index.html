@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<style>
+body{
+    background: burlywood;
+    color: darkgreen;
+}
+#cont{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex-wrap: wrap;
+    margin: 2px;
+    width: 100%;
+}
+.dvcv{
+    position: relative;
+    margin: 40px 5px;
+    text-align: center;
+}
+.txNt{
+    position: relative;
+    top: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    margin: 5px;
+}
+#dvnewm{
+display: none;
+
+}
+#dvnew{
+display: none;
+position: fixed;
+left: 0px;
+right: 0px;
+bottom: 0px;
+width: 100%;
+height: 156px;
+background: #c7a273;
+overflow: auto;
+z-index: 50;
+}
+#dvcont{
+position: relative;
+top: 5px;
+left: 5px;
+right: 5px;
+}
+#btadd{
+position: fixed;
+bottom: 20px;
+right: 20px;
+font-size: xx-large;
+z-index: 4;
+}
+
+#btaddN{
+position: fixed;
+bottom: 20px;
+right: 20px;
+font-size: xx-large;
+z-index: 5;
+}
+#btsave{
+display: block;
+position: fixed;
+bottom: 20px;
+right: 60px;
+font-size: xx-large;
+z-index: 4;
+}
+#btclose{
+    display: block;
+    position: fixed;
+    top: 5px;
+    right: 5px;
+    font-size: medium;
+    z-index: 4;
+}
+.kss{
+border: 1px solid grey;
+}
+#btadd2{
+position: fixed;
+bottom: 13px;
+left: 5px;
+font-size: medium;
+}
+</style>
+<div id="dvnewm">
+<h3 id="txtt"></h3>
+<div id="dvnew">
+<div id="dvcont">
+</div>
+</div>
+<div id="cont">
+</div>
+<input type="button" value="+" id="btaddN" onclick="addN()"/>
+<input type="button" value="S" id="btsave" onclick="saveList()"/>
+<input type="button" value="X" id="btclose" onclick="closeedit()"/>
+</div>
+
+<div id="dvlist">
+<div id="contm">
+</div>
+<input type="button" value="+" id="btadd" onclick="addM()"/>
+</div>
+<script>
+var W=400;
+var H=60;
+var ksm=["C1","D1","E1","F1","G1","A1","B1","C2","D2","E2","F2","G2","A2","B2","C3","D3","E3","F3","G3","A3","B3","C4","D4","E4","F4","G4","A4","B4"];
+var oct=2;
+var kwt=ksm.length;
+var kw=(W/kwt);
+var qtdCv=0;
+
+function note(nt){
+var lts="CDEFGAB";
+var pss=[];
+var kw=20,contH=70;
+var oct=4,nat=0,octat=1;
+var contW=(kw*7*oct)+10;
+var clpss="rgb(200, 200, 255)",clnpss="rgb(255, 255, 255)";
+var clpss2="rgb(200, 200, 255)",clnpss2="rgb(0, 0, 0)";
+dvcont.style.width=contW+"px";
+dvcont.style.height=contH+"px";
+
+var divcv = document.createElement("div");
+divcv.className="dvcv";
+var tx = document.createElement("span");
+document.getElementById("cont").appendChild(divcv);
+
+//for(var n=0;n<(7*oct);n++){
+//var kw=contW/(7*oct);
+ksm.forEach(function(k,n){
+var tnote=k;
+const dv = document.createElement("div");
+dv.className="kss";
+dv.style.position="absolute";
+dv.style.width = kw+"px";
+dv.style.height = contH+"px";
+dv.style.background=(nt.includes(tnote))? clpss:clnpss;
+dv.style.left=(kw*n)+"px";
+dv.style.zIndex="1";
+
+divcv.appendChild(dv);
+if(!k.includes("E")&&!k.includes("B")){
+const dv2 = document.createElement("div");
+dv2.className="kss";
+dv2.style.position="absolute";
+dv2.style.width = kw/2+"px";
+dv2.style.height = (contH/2)+5+"px";
+dv2.style.background=(nt.includes((tnote+"#")))? clpss2:clnpss2;
+dv2.style.left=(kw*n+(kw-kw/4))+"px";
+dv2.style.zIndex="2";
+
+divcv.appendChild(dv2);
+
+}
+});
+tx.innerHTML=nt;
+tx.className="txNt";
+divcv.appendChild(tx);
+document.getElementById("cont").appendChild(divcv);
+}
+
+
+function note0(n){
+var divcv = document.createElement("div");
+var tx = document.createElement("span");
+var mycanvas = document.createElement("canvas");
+divcv.className="dvcv";
+mycanvas.id = "cv"+qtdCv;
+tx.id="tx"+qtdCv;
+mycanvas.style="border:1px solid #d3d3d3;";
+divcv.appendChild(mycanvas);
+divcv.appendChild(tx);
+document.getElementById("cont").appendChild(divcv);
+var c = document.getElementById("cv"+qtdCv);
+var ctx = c.getContext("2d");
+qtdCv++;
+c.width=W;
+c.height=H;
+ctx.font = "10px Arial";
+tx.innerHTML=n;
+
+ksm.forEach(function(k,ind){
+
+var tnote=k;
+ctx.strokeRect(kw*ind,1,kw,H);
+ctx.stroke();
+
+if(n.includes(tnote)){
+ctx.fillStyle = "#aaa";
+ctx.fillRect(kw*ind,1,kw,H);
+ctx.fill();
+}
+ctx.fillStyle = "#000";
+ctx.fillText(tnote, (kw*ind)+kw-15, 55);
+
+});
+
+ksm.forEach(function(k,ind){
+if(!k.includes("E")&&!k.includes("B")){
+tnote=k+"#";
+ctx.fillStyle = (n.includes(tnote))? "#aaa":"#000";
+ctx.fillRect(kw*ind+(kw-kw/4),1,kw/2,H/2);
+
+ctx.fill();
+ctx.fillText(tnote, (kw*ind)+kw-6, 40);
+}
+
+});
+}
+
+
+var dbn=[];
+var mus={name:"",nts:[]};
+function editn(){
+var lts="CDEFGAB";
+var pss=[];
+var kw=40,contH=110;
+var oct=4,nat=0,octat=1;
+var contW=(kw*7*oct)+10;
+var clpss="rgb(200, 200, 255)",clnpss="rgb(255, 255, 255)";
+var clpss2="rgb(200, 200, 255)",clnpss2="rgb(0, 0, 0)";
+dvcont.style.width=contW+"px";
+dvcont.style.height=contH+"px";
+for(var n=0;n<(7*oct);n++){
+//var kw=contW/(7*oct);
+const dv = document.createElement("div");
+dv.className="kss";
+dv.style.position="absolute";
+dv.style.width = kw+"px";
+dv.style.height = contH+"px";
+dv.style.background=clnpss;
+dv.style.left=(kw*n)+"px";
+dv.style.zIndex="1";
+dv.id=lts.charAt(nat)+octat;
+dv.onclick=function(){
+if(this.style.backgroundColor==clpss){
+this.style.backgroundColor=clnpss;
+const index = pss.indexOf(this.id);
+if (index > -1) pss.splice(index, 1);
+}else{
+this.style.backgroundColor=clpss;
+pss.push(this.id);
+}
+
+};
+document.getElementById("dvcont").appendChild(dv);
+if(!dv.id.includes("E")&&!dv.id.includes("B")){
+const dv2 = document.createElement("div");
+dv2.className="kss";
+dv2.style.position="absolute";
+dv2.style.width = kw/2+"px";
+dv2.style.height = (contH/2)+5+"px";
+dv2.style.background=clnpss2;
+dv2.style.left=(kw*n+(kw-kw/4))+"px";
+dv2.style.zIndex="2";
+dv2.id=lts.charAt(nat)+octat+"#";
+dv2.onclick=function(){
+if(this.style.backgroundColor==clpss2){
+this.style.backgroundColor=clnpss2;
+const index = pss.indexOf(this.id);
+if (index > -1) pss.splice(index, 1);
+}else{
+this.style.backgroundColor=clpss2;
+pss.push(this.id);
+}
+
+};
+document.getElementById("dvcont").appendChild(dv2);
+}
+nat++;
+if(nat>=7){
+nat=0;
+octat++;
+}
+}
+const bta = document.createElement("input");
+bta.type="button";
+bta.id="btadd2";
+bta.value="Add";
+bta.onclick=function(){
+dbn.push(pss);
+note(pss);
+//console.log(dbn);
+document.getElementById("dvcont").innerHTML="";
+document.getElementById("dvnew").style.display="none";
+document.getElementById("btadd").style.display="block";
+}
+document.getElementById("dvnew").appendChild(bta);
+}
+
+
+
+function addN(){
+document.getElementById("dvnew").style.display="block";
+document.getElementById("btadd").style.display="none";
+editn();
+}
+
+
+function addM(){
+document.getElementById("dvnewm").style.display="block";
+document.getElementById("dvlist").style.display="none";
+cont.innerHTML="";
+var mname = prompt("Name");
+txtt.innerHTML=mname;
+mus.name=mname;
+}
+
+function saveList(){
+mus.nts=dbn;
+if (typeof(Storage) !== "undefined") {
+localStorage.setItem(mus.name, JSON.stringify(mus.nts));
+} else {  console.log("Sorry, your browser does not support Web Storage...");
+}
+}
+function closeedit(){
+document.getElementById("dvnewm").style.display="none";
+document.getElementById("dvlist").style.display="block";
+cont.innerHTML="";
+allStorage();
+}
+
+
+
+
+
+
+function newVal(){
+var vals=[];
+var title=prompt("Set name");
+for(var i=0;i<100;i++) {
+var val=[];
+for(var j=0;j<6;j++) {
+val.push(j);
+}
+vals.push(val);
+}
+
+if (typeof(Storage) !== "undefined") {
+localStorage.setItem(title, JSON.stringify(vals));
+} else {  console.log("Sorry, your browser does not support Web Storage...");
+}
+}
+//newVal();
+var archive = [];
+function allStorage() {
+var htmllist="";
+var keys = Object.keys(localStorage),
+i = 0, key;
+for (; key = keys[i]; i++) {
+archive.push(localStorage.getItem(key));
+htmllist+="<h3 onclick=\"loadM('"+i+"','"+key+"')\">"+key+"</h3>";
+}
+contm.innerHTML=htmllist;
+//return archive;
+}
+allStorage();
+
+function loadM(ind,name){
+document.getElementById("dvnewm").style.display="block";
+document.getElementById("dvlist").style.display="none";
+txtt.innerHTML=name;
+console.log(archive[ind]);
+for(var n=0;n<archive[ind].length;n++){
+note(JSON.parse(archive[ind])[n]);
+}
+}
+//JSON.parse(archive[id])[i][j]
+//document.getElementById("result").innerHTML = JSON.parse(archive[0])[0][0];
+</script>
+
+</body>
+</html>
